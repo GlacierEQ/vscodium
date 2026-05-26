@@ -112,6 +112,10 @@ if [[ "${SKIP_BUILD}" == "no" ]]; then
     git add .
     git reset -q --hard HEAD
 
+    while [[ -n "$( git log -1 | grep "VSCODIUM HELPER" )" ]]; do
+      git reset -q --hard HEAD~
+    done
+
     rm -rf .build out*
 
     cd ..
@@ -151,7 +155,7 @@ if [[ "${SKIP_ASSETS}" == "no" ]]; then
   if [[ "${OS_NAME}" == "osx" && -f "dev/osx/codesign.env" ]]; then
     . dev/osx/macos-codesign.env
 
-    echo "CERTIFICATE_OSX_ID: ${CERTIFICATE_OSX_ID}"
+    echo "CERTIFICATE_OSX_APPLE_ID: ${CERTIFICATE_OSX_APPLE_ID}"
   fi
 
   . prepare_assets.sh

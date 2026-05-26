@@ -13,6 +13,8 @@ cp -f LICENSE vscode/LICENSE.txt
 
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
+# rm -rf extensions/copilot
+
 { set +x; } 2>/dev/null
 
 # {{{ product.json
@@ -58,6 +60,10 @@ if [[ "${DISABLE_UPDATE}" != "yes" ]]; then
   else
     setpath "product" "downloadUrl" "https://github.com/VSCodium/vscodium/releases"
   fi
+
+  # if [[ "${OS_NAME}" == "windows" ]]; then
+  #   setpath_json "product" "win32VersionedUpdate" "true"
+  # fi
 fi
 
 if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
@@ -132,14 +138,22 @@ cat product.json
 
 echo "APP_NAME=\"${APP_NAME}\""
 echo "APP_NAME_LC=\"${APP_NAME_LC}\""
+echo "ASSETS_REPOSITORY=\"${ASSETS_REPOSITORY}\""
 echo "BINARY_NAME=\"${BINARY_NAME}\""
 echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
+echo "GLOBAL_DIRNAME=\"${GLOBAL_DIRNAME}\""
 echo "ORG_NAME=\"${ORG_NAME}\""
 echo "TUNNEL_APP_NAME=\"${TUNNEL_APP_NAME}\""
 
 if [[ "${DISABLE_UPDATE}" == "yes" ]]; then
-  mv ../patches/disable-update.patch.yet ../patches/disable-update.patch
+  mv ../patches/00-update-disable.patch.yet ../patches/00-update-disable.patch
 fi
+
+for file in ../patches/*.json; do
+  if [[ -f "${file}" ]]; then
+    apply_actions "${file}"
+  fi
+done
 
 for file in ../patches/*.patch; do
   if [[ -f "${file}" ]]; then
@@ -192,6 +206,8 @@ else
   fi
 fi
 
+node build/npm/preinstall.ts
+
 mv .npmrc .npmrc.bak
 cp ../npmrc .npmrc
 
@@ -236,9 +252,7 @@ replace "s|\\[\\/\\* BUILTIN_ANNOUNCEMENTS \\*\\/\\]|$( tr -d '\n' < ../announce
 
 ../undo_telemetry.sh
 
-replace 's|Microsoft Corporation|VSCodium|' build/lib/electron.js
 replace 's|Microsoft Corporation|VSCodium|' build/lib/electron.ts
-replace 's|([0-9]) Microsoft|\1 VSCodium|' build/lib/electron.js
 replace 's|([0-9]) Microsoft|\1 VSCodium|' build/lib/electron.ts
 
 if [[ "${OS_NAME}" == "linux" ]]; then
@@ -273,7 +287,7 @@ if [[ "${OS_NAME}" == "linux" ]]; then
   sed -i 's|https://code.visualstudio.com|https://vscodium.com|' resources/linux/rpm/code.spec.template
 
   # snapcraft.yaml
-  sed -i 's|Visual Studio Code|VSCodium|'  resources/linux/rpm/code.spec.template
+  sed -i 's|Visual Studio Code|VSCodium|' resources/linux/rpm/code.spec.template
 elif [[ "${OS_NAME}" == "windows" ]]; then
   # code.iss
   sed -i 's|https://code.visualstudio.com|https://vscodium.com|' build/win32/code.iss

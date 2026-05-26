@@ -13,10 +13,6 @@
 [![codium](https://snapcraft.io//codium/badge.svg)](https://snapcraft.io/codium)
 [![codium](https://snapcraft.io//codium/trending.svg?name=0)](https://snapcraft.io/codium)
 
-[![build status (linux)](https://img.shields.io/github/actions/workflow/status/VSCodium/vscodium/stable-linux.yml?branch=master&label=build%28linux%29)](https://github.com/VSCodium/vscodium/actions/workflows/stable-linux.yml?query=branch%3Amaster)
-[![build status (macos)](https://img.shields.io/github/actions/workflow/status/VSCodium/vscodium/stable-macos.yml?branch=master&label=build%28macOS%29)](https://github.com/VSCodium/vscodium/actions/workflows/stable-macos.yml?query=branch%3Amaster)
-[![build status (windows)](https://img.shields.io/github/actions/workflow/status/VSCodium/vscodium/stable-windows.yml?branch=master&label=build%28windows%29)](https://github.com/VSCodium/vscodium/actions/workflows/stable-windows.yml?query=branch%3Amaster)
-
 </div>
 
 **This is not a fork. This is a repository of scripts to automatically build [Microsoft's `vscode` repository](https://github.com/microsoft/vscode) into freely-licensed binaries with a community-driven default configuration.**
@@ -179,8 +175,8 @@ The builds are run every day, but exit early if there isn't a new release from M
 
 The minimal version is limited by the core component Electron, you may want to check its [platform prerequisites](https://www.electronjs.org/docs/latest/development/build-instructions-gn#platform-prerequisites).
 
-- [x] macOS (`zip`, `dmg`) macOS 10.15 or newer x64
-- [x] macOS (`zip`, `dmg`) macOS 11.0 or newer arm64
+- [x] macOS (`zip`, `dmg`) macOS 12 or newer x64
+- [x] macOS (`zip`, `dmg`) macOS 12 or newer arm64
 - [x] GNU/Linux x64 (`deb`, `rpm`, `AppImage`, `snap`, `tar.gz`)
 - [x] GNU/Linux arm64 (`deb`, `rpm`, `snap`, `tar.gz`)
 - [x] GNU/Linux armhf (`deb`, `rpm`, `tar.gz`)

@@ -22,20 +22,23 @@ if [[ "${VSCODE_ARCH}" == "x64" ]]; then
   ./pkg2appimage.AppImage --appimage-extract && mv ./squashfs-root ./pkg2appimage.AppDir
 
   # add update's url
-  sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/' pkg2appimage.AppDir/AppRun
-
+  if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
+    sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium-insiders|latest|*.AppImage.zsync"/' pkg2appimage.AppDir/AppRun
+  else
+    sed -i 's/generate_type2_appimage/generate_type2_appimage -u "gh-releases-zsync|VSCodium|vscodium|latest|*.AppImage.zsync"/' pkg2appimage.AppDir/AppRun
+  fi
   # remove check so build in docker can succeed
   sed -i 's/grep docker/# grep docker/' pkg2appimage.AppDir/usr/share/pkg2appimage/functions.sh
 
   APP_NAME_LC="$( echo "${APP_NAME}" | awk '{print tolower($0)}' )"
 
   if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-    sed -i "s|@@NAME@@|${APP_NAME}-Insiders|g" recipe.yml
-    sed -i "s|@@APPNAME@@|${BINARY_NAME}|g" recipe.yml
+    sed -i "s|@@APP_NAME@@|${APP_NAME}-Insiders|g" recipe.yml
+    sed -i "s|@@BINARY_NAME@@|${BINARY_NAME}|g" recipe.yml
     sed -i "s|@@ICON@@|${APP_NAME_LC}-insiders|g" recipe.yml
   else
-    sed -i "s|@@NAME@@|${APP_NAME}|g" recipe.yml
-    sed -i "s|@@APPNAME@@|${BINARY_NAME}|g" recipe.yml
+    sed -i "s|@@APP_NAME@@|${APP_NAME}|g" recipe.yml
+    sed -i "s|@@BINARY_NAME@@|${BINARY_NAME}|g" recipe.yml
     sed -i "s|@@ICON@@|${APP_NAME_LC}|g" recipe.yml
   fi
 

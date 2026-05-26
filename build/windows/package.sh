@@ -20,11 +20,20 @@ for i in {1..5}; do # try 5 times
   echo "Npm install failed $i, trying again..."
 done
 
-node build/azure-pipelines/distro/mixin-npm
+node build/azure-pipelines/distro/mixin-npm.ts
+
+# delete native files built in the `compile` step
+find .build/extensions -type f -name '*.node' -print -delete
 
 . ../build/windows/rtf/make.sh
 
-npm run gulp "vscode-win32-${VSCODE_ARCH}-min-ci"
+# generate Group Policy definitions
+npm run copy-policy-dto --prefix build
+node build/lib/policies/policyGenerator.ts build/lib/policies/policyData.jsonc win32
+
+# node build/win32/explorer-dll-fetcher.ts .build/win32/appx
+
+npm run gulp "vscode-win32-${VSCODE_ARCH}-min-packing"
 
 . ../build_cli.sh
 
